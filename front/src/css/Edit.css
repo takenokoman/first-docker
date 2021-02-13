@@ -1,0 +1,26 @@
+#edit-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background-color: #FF9900;
+  border-radius: 30px;
+  text-align: center;
+  box-shadow: 0 0 6px gray;
+}
+#edit-btn a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 30px;
+}
+#edit-container {
+  position: fixed;
+  top: 60px;
+  margin: auto;
+  background-color: white;
+  width: 100%;
+  height: 120%;
+  border-radius: 10px;
+}

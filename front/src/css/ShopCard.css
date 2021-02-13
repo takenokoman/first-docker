@@ -1,0 +1,38 @@
+
+#app {
+  width: 100%;
+}
+#sc-wrap {
+  width: 100%;
+}
+#sc-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+}
+
+#shop-card {
+  border-radius: 5px;
+  background-color: #FF9900;
+  color: white;
+  height: 100px;
+  width: 150px;
+  overflow: hidden;
+  margin: 30px;
+}
+#sc-img {
+  height: 70%;
+}
+#sc-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+#sc-p {
+  padding: 0 5px;
+}
+#sc-p p {
+  margin: 5px;
+  font-size: 9px;
+}

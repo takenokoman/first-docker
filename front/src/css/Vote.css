@@ -1,0 +1,15 @@
+#vote-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+#vote {
+  width: 300px;
+  height: 100px;
+  border-radius: 5px;
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.24);
+  margin: 30px;
+}
+#voter-name p {
+  margin: 5px 17px;
+}
