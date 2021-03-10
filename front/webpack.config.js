@@ -60,8 +60,8 @@ module.exports = {
       contentBase: path.join(__dirname, 'src'),// HTML等コンテンツのルートディレクトリ
       watchContentBase: true,//コンテンツの変更監視をする
       port: 8080, // ポート番号
-      host: '0.0.0.0',//Dockerコンテナ側のipアドレス
       historyApiFallback: true,
+      host: '0.0.0.0',//Dockerコンテナ側のipアドレス
       inline: true,
       hot: true,
       watchOptions:{
@@ -69,7 +69,13 @@ module.exports = {
         aggregateTimeout: 300,
         ignored: /node_modules/
       },
+      proxy: {
+        '/api/**': {
+          target: 'http://localhost:3000',
+          secure: false,
+          logLevel: 'debug'
+        }
+      },
     },
     devtool: 'inline-source-map',
-
 };

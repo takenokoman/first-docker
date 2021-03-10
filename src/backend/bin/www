@@ -1,0 +1,184 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+const app = require('../app');
+const debug = require('debug')('app:server');
+const http = require('http');
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+const port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+ app.use((req, res, next) => {
+   res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+   res.setHeader("Access-Control-Allow-Methods", "POST, GET");
+   res.setHeader("Access-Control-Max-Age", "3600");
+   res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, x-access-token, x-user-id,Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+   console.log("返事が聞こえないぞ...GJJJ...");
+   next();
+ });
+
+const mysql = require('mysql');
+const connection = mysql.createConnection({
+  host: 'mysql',
+  user: 'root',
+  password: 'root',
+  database: 'first_docker'
+});
+
+connection.connect((err) => {
+  if (err) {
+    console.log('error connecting: ' + err.stack);
+    return;
+  }
+  console.log('success');
+});
+const server = http.createServer(app);
+const io = require('socket.io')(server, {
+  cors: {
+    origin: "http://localhost:3001",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["my-custom-header"],
+    credentials: true
+  }
+});
+io.on('connection', (socket) => {
+  console.log('ユーザーが接続しました');
+  socket.on('postLikes', (likesData) => {
+    console.log("いいねしようとしています");
+    const createdAt = new Date();
+    const userId = likesData.userId;
+    const postId = likesData.postId;
+    console.log("idを宣言");
+    connection.query(
+      'UPDATE posts SET likes = likes + 1 WHERE id = ?',
+      [postId],
+      (err2, rows2) => {
+        connection.query(
+          'INSERT INTO likes (created_at, user_id, post_id) VALUES (?, ?, ?)',
+          [createdAt, userId, postId],
+          (err, rows) => {
+            connection.query(
+              'SELECT * FROM posts WHERE id = ?',
+              [postId],
+              (err, rows3) => {
+                const data = {
+                  likes: rows3[0].likes,
+                  num: likesData.num
+                };
+                io.emit('showLikes', data);
+                console.log("post_id:" + postId + "に user_id:" + userId + "さんがいいねしました");
+
+              }
+            )
+          }
+        );
+      }
+    )
+  });
+  socket.on('postEdit', (editData) => {
+    const inputName = editData.userName;
+    const inputText = editData.text;
+    const createdAt = new Date();
+    console.log('きたedit' + inputName + "こあら");
+    connection.query(
+      'SELECT * FROM users WHERE user_name = ?',
+      [inputName],
+      (err, rows) => {
+        console.log('きたedit2');
+        const userId = rows[0].id;
+        connection.query(
+          'INSERT INTO posts (article, user_id, created_at) VALUES (?, ?, ?)',
+          [inputText, userId, createdAt],
+          (err, rows2) => {
+            connection.query(
+              'SELECT posts.*, users.user_name FROM posts INNER JOIN users ON posts.user_id = users.id ORDER BY posts.id DESC',
+              (err, rows3) => {
+                io.emit('memberPost', rows3[0]);
+              }
+            )
+            console.log("保存完了" + userId + "神" + createdAt);
+          }
+        );
+      }
+    );
+  });
+});
+
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  const port = parseInt(val, 10);
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  const bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  const addr = server.address();
+  const bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
+
+module.exports = io;

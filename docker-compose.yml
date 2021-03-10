@@ -2,6 +2,7 @@ version: '3'
 services:
   mysql:
     image: mysql:5.7
+    container_name: mysql
     env_file: ./mysql/mysql.env
     environment:
       - TZ=Asia/Tokyo
@@ -14,6 +15,7 @@ services:
       - default
   front:
     image: node:12
+    container_name: front
     env_file: ./app.env
     environment:
       - TZ=Asia/Tokyo
@@ -29,6 +31,7 @@ services:
       - default
   app:
     image: node:12
+    container_name: app
     env_file: ./app.env
     environment:
       - TZ=Asia/Tokyo
@@ -37,10 +40,11 @@ services:
     tty: true
     ports:
       - '3000:3000'
+      - '3001:3001'
     volumes:
       - ./src:/app
     working_dir: /app
-    command: npm start
+    command: npm run server
     networks:
       - default
     depends_on:

@@ -1,6 +1,6 @@
 import React from "react";
 
-export default class ShopCard extends React.Component {
+export default class Vote extends React.Component {
   constructor() {
     super();
 
@@ -9,7 +9,6 @@ export default class ShopCard extends React.Component {
     return (
       <div id="vote">
         <div id="voter-name">
-          <p>さとし</p>
         </div>
 
       </div>
