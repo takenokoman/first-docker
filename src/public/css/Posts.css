@@ -1,0 +1,94 @@
+
+#post {
+  display: flex;
+}
+#comment {
+  display: flex;
+}
+.comments {
+  border-radius: 50px;
+  background-color: rgba(255, 255, 255, 1);
+  height: 0;
+  transform: scaleY(0);
+}
+.comments ul {
+  background-color: rgba(255, 255, 255, 1);
+}
+.slidein {
+  height: 100%;
+  transform: scaleY(1);
+}
+#posts-container {
+  width: 100%;
+}
+#posts-ul {
+  width: 90%;
+  margin: 0 auto;
+  padding: 0;
+}
+#posts-ul li {
+  border-radius: 50px;
+  margin: 10px;
+  padding: 0 5px;
+  list-style: none;
+  box-shadow: 0 0 5px lightgray;
+}
+#posts-ul li p {
+  width: 100%;
+  padding: 5px;
+  font-size: 15px;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.reply {
+  display: flex;
+}
+.reply-form{
+  margin: 10px;
+  box-shadow: 0 0 5px lightgray;
+  border-radius: 100px;
+}
+.reply textarea {
+  margin: 10px 20px;
+  font-size: 15px;
+  color: gray;
+  width: 70%;
+  border-style: none;
+  resize: none;
+}
+.reply i {
+  font-size: 20px;
+}
+.reply button {
+  background-color: white;
+  border-style: none;
+
+}
+.user-name {
+  margin: 20px auto;
+  vertical-align: middle;
+  font-weight: bolder;
+}
+.user-icon img {
+  margin: 12px 0 12px 10px;
+  width: 70px;
+  height: 70px;
+  border-radius: 1000px;
+  box-shadow: 0 0 5px lightgray;
+  object-fit: cover;
+}
+.posts-params {
+  display: inline-block;
+}
+.param {
+  border-style: none;
+  background-color: rgba(0, 0, 0, 0);
+}
+.param span {
+  margin: 0 5px;
+}
+
+.posts-time {
+  font-weight: normal;
+}

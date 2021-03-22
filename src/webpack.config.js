@@ -2,6 +2,7 @@ var debug   = process.env.NODE_ENV !== "production";
 var webpack = require('webpack');
 var path    = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 
@@ -45,10 +46,9 @@ module.exports = {
       filename: "client.min.js"
     },
     plugins: [
-      process.env.NODE_ENV==='production' ?  new webpack.optimize.OccurrenceOrderPlugin() : false,
-      process.env.NODE_ENV==='production' ?  new UglifyJsPlugin({
-             test: /\.js(\?.*)?$/i
-        }) : false,
+      // process.env.NODE_ENV==='production' ?  new UglifyJsPlugin({
+      //        test: /\.js(\?.*)?$/i
+      //   }) : false,
       new webpack.HotModuleReplacementPlugin(),
       process.env.NODE_ENV==='production' ?  new HtmlWebpackPlugin({
         filename: './index.html',

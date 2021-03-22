@@ -8,7 +8,7 @@
   box-shadow: 0 0 5px lightgray;
   margin: 5px;
 }
-#upload-label {
+.color-btn {
   display: inline-block;
   cursor: pointer;
   margin-right: 20px;
@@ -18,16 +18,16 @@
   color: #FFF;
   font-size: 0.95em;
   border-radius: 10px;
+  border-style: none;
   transition: 0.2s;
 }
-#upload-label:hover {
+.color-btn:hover {
   padding: 7px 12px;
   box-shadow: 0 8px 10px -2px rgba(0, 0, 0, 0.2); /* 影を表示 */
 }
 #upload-icon {
   display: none;
 }
-
 
 #img-preview img {
   width: 100px;
@@ -36,22 +36,7 @@
   box-shadow: 0 0 5px lightgray;
   object-fit: cover;
 }
-#post-img {
-  display: inline-block;
-  cursor: pointer;
-  padding: 5px 10px;
-  line-height: 1.4;
-  background: #920;
-  color: #FFF;
-  font-size: 0.95em;
-  border-radius: 10px;
-  border-style: none;
-  transition: 0.2s;
-}
-#post-img:hover {
-  padding: 7px 12px;
-  box-shadow: 0 8px 10px -2px rgba(0, 0, 0, 0.2); /* 影を表示 */
-}
+
 #vote {
   background-color: lightgray;
 }

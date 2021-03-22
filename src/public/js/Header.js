@@ -4,9 +4,11 @@ import Login from "./Login.js";
 import Register from "./Register.js";
 import Edit from "./Edit.js";
 import Nav from "./Nav.js";
-
+import Cookies from "universal-cookie";
 //UserContexts
 import UserContext from "./contexts/userContext.js";
+
+const cookies = new Cookies();
 
 export default class Header extends React.Component {
   constructor() {
@@ -40,7 +42,7 @@ export default class Header extends React.Component {
     console.log(user);
   }
   render() {
-    console.log("Header" + this.context.userIcon + ":"+ this.context.userName)
+    console.log("Header" + ":" + cookies.get('userName'))
     return (
       <header>
         <div id="hd-wrap">
@@ -48,15 +50,14 @@ export default class Header extends React.Component {
             <div id="hd-logo">
               <h1><Link to="/">Twitter(大嘘)</Link></h1>
             </div>
-            {this.context.isLogedIn ?
+            {cookies.get('login') ?
               <div>
                 <div id="user-name">
-                  <p>Hello {this.context.userName}</p>
+                  <p>{cookies.get('userName')}</p>
                   <div className="hd-user-icon">
                     <img src={
-                      this.context.userIcon !== null ?
-                        "../img/" + this.context.userIcon
-                        :
+                      cookies.get('userIcon') ?
+                        "../img/" + cookies.get('userIcon') :
                         "../img/default-icon.svg"
                     } />
                   </div>
@@ -78,19 +79,11 @@ export default class Header extends React.Component {
           <Nav />
         </div>
         {this.state.showLogin ?
-          <UserContext.Consumer>
-            {user => (
-              <Login handleLogin={user.handleLogin} showLogin={this.state.showLogin} toggleLogin={this.toggleLogin.bind(this)} />
-            )}
-          </UserContext.Consumer>
+          <Login showLogin={this.state.showLogin} toggleLogin={this.toggleLogin.bind(this)} />
         : null}
         {this.state.showRegister ? <Register toggleRegister={this.toggleRegister.bind(this)} /> : null}
         {this.state.showEdit ?
-          <UserContext.Consumer>
-            {user => (
-              <Edit toggleEdit={this.toggleEdit.bind(this) } userName={user.name} />
-            )}
-          </UserContext.Consumer>
+          <Edit toggleEdit={this.toggleEdit.bind(this) } />
         : null}
       </header>
     );

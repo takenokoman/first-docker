@@ -1,10 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Redirect, Link, withRouter, } from "react-router-dom";
 import axiosBase from "axios";
-
+import Cookies from "universal-cookie";
 //UserContexts
 import UserContext from "./contexts/userContext.js";
 
+
+const cookies = new Cookies();
 //axiosの設定
 const axios = axiosBase.create({
   baseURL: 'http://localhost:3000', // バックエンドB のURL:port を指定する
@@ -12,6 +14,7 @@ const axios = axiosBase.create({
     'Content-Type': 'application/json',
     'X-Requested-With': 'XMLHttpRequest'
   },
+  withCredentials: true,
   responseType: 'json'
 });
 
@@ -25,6 +28,7 @@ export default class Login extends React.Component {
     this.userNameChange = this.userNameChange.bind(this);
     this.passwordChange = this.passwordChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
   }
 
   userNameChange(e) {
@@ -34,8 +38,19 @@ export default class Login extends React.Component {
   passwordChange(e) {
     this.setState({password: e.target.value});
   }
-
-
+  handleLogin(userName, userId, userIcon) {
+    console.log("handleLoginまではきました" + userName + userId);
+    console.log(2 + cookies.get('userId'));
+    cookies.set('userId', userId, { path: '/' , maxAge: 60*30});
+    cookies.set('userName', userName, { path: '/' , maxAge: 60*30});
+    cookies.set('userIcon', userIcon, { path: '/' , maxAge: 60*30});
+    cookies.set('login', true, { path: '/' , maxAge: 1800})
+    console.log("handleLoginです" + userName + "さん。ログイン状態は" + cookies.get('login'));
+    const toString = Object.prototype.toString;
+    console.log(toString.call(userIcon));
+    console.log(toString.call(cookies.get('userIcon')));
+    location.reload();
+  }
   handleSubmit(e) {
     e.preventDefault();
     const userName = this.state.userName;
@@ -49,8 +64,8 @@ export default class Login extends React.Component {
         if (res.data.login) {
           console.log(res.data.userName + "さんがログインしました。ログイン状態:"
             + this.state.login+ res.data.userId);
-          this.props.handleLogin(res.data.userName, res.data.userId, res.data.userIcon);
-          this.setState({login: true});
+            console.log(res.data.userIcon);
+          this.handleLogin(res.data.userName, res.data.userId, res.data.userIcon);
           const tl = this.props.toggleLogin;
           tl();
         } else {
@@ -60,10 +75,12 @@ export default class Login extends React.Component {
       .catch((error) => {
         alert('ログインに失敗しました');
         console.log('ERROR!! occurred in Backend.');
+        console.log(error);
       });
     this.setState({password: ''});
     console.log('...');
   }
+
   componentDidMount() {
     console.log("Loginコンポーネントはマウントされましたログイン状態:" + this.state.login);
   }

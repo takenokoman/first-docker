@@ -3,15 +3,18 @@ import axiosBase from "axios";
 import { BrowserRouter as Router, Route, Redirect, Link, withRouter, } from "react-router-dom";
 import socketIOClient from "socket.io-client";
 const ENDPOINT = "http://localhost:3000";
+import Cookies from "universal-cookie";
 
 import UserContext from "./contexts/userContext.js";
 
+const cookies = new Cookies();
 const axios = axiosBase.create({
   baseURL: 'http://localhost:3000', // バックエンドB のURL:port を指定する
   headers: {
     'Content-Type': 'application/json',
     'X-Requested-With': 'XMLHttpRequest'
   },
+  withCredentials: true,
   responseType: 'json'
 });
 
@@ -24,7 +27,7 @@ export default class Edit extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   handleSubmit(e) {
-    const userName = this.context.userName;
+    const userName = cookies.get('userName');
     const text = this.state.text;
     e.preventDefault();
     console.log(userName);
@@ -51,7 +54,7 @@ export default class Edit extends React.Component {
 
   componentDidMount() {
     console.log("Editコンポーネントはマウントされましたログイン状態:" +
-     this.state.edit + this.context.userName + this.context.isLogedIn);
+     cookies.get('login'));
   }
   componentWillUnmount() {
     const list1 = Object.keys(this.context);
