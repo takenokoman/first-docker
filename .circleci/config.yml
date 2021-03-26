@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
-  aws-ecr: circleci/aws-ecr@0.0.10
-  aws-ecs: circleci/aws-ecs@0.0.8
+  aws-ecr: circleci/aws-ecr@6.15.3
+  aws-ecs: circleci/aws-ecs@2.1.0
 workflows:
   build-and-deploy:
     jobs:
@@ -15,8 +15,6 @@ workflows:
       - aws-ecs/deploy-service-update:
           requires:
             - aws-ecr/build_and_push_image
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           aws-region: AWS_DEFAULT_REGION
           family: "${AWS_RESOURCE_NAME_PREFIX}-service"
           cluster-name: "${AWS_RESOURCE_NAME_PREFIX}-cluster"
