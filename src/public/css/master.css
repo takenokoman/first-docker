@@ -1,5 +1,10 @@
 @media screen and (max-width: 480px) {
-
+  #hd-btn button {
+    font-size:9px;
+  }
+  h1 {
+    font-size:20px;
+  }
 }
 :focus {
     outline: none;

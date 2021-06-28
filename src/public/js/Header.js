@@ -48,18 +48,14 @@ export default class Header extends React.Component {
         <div id="hd-wrap">
           <div id="hd-container">
             <div id="hd-logo">
-              <h1><Link to="/">Twitter(大嘘)</Link></h1>
+              <h1><Link to="/">Sample</Link></h1>
             </div>
             {cookies.get('login') ?
               <div>
                 <div id="user-name">
                   <p>{cookies.get('userName')}</p>
                   <div className="hd-user-icon">
-                    <img src={
-                      cookies.get('userIcon') ?
-                        "../img/" + cookies.get('userIcon') :
-                        "../img/default-icon.svg"
-                    } />
+                    <img src="../img/default-icon.svg" />
                   </div>
                   <button id="edit-btn" onClick={this.toggleEdit.bind(this)}>+</button>
                 </div>

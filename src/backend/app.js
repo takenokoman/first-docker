@@ -24,20 +24,29 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Methods", "POST, GET");
   res.setHeader("Access-Control-Max-Age", "3600");
   res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, x-access-token, x-user-id,Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
-  console.log("返事が聞こえないぞ...GJJJ...");
+  console.log("API通信");
   next();
 });
 
 //セッション
 const options = {
-    host: 'mysql',
-    port: 3306,
-    user: 'root',
-    password: 'root',
-    database: 'first_docker'
+  host: process.env.DB_HOST,
+  port: 3306,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE
 };
+// const options = {
+//   host: 'mysql',
+//   port: 3306,
+//   user: 'root',
+//   password: 'root',
+//   database: 'first_docker'
+// };
+
+
 const sessionStore = new mysqlStore(options);
-// const sessionStore = new expressSession.MemoryStore();
+
 const session = expressSession({
   store: sessionStore,
   secret: 'catIsKawaii', // 環境変数で設定などする。今回は省略して固定値
@@ -60,12 +69,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const indexRouter = require('./routes/index');
-// const usersRouter = require('./routes/users');
-// const editRouter = require('./routes/edits');
 
 app.use('/api', indexRouter);
-// app.use('/users', usersRouter);
-// app.use('/edits', editRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -77,11 +82,11 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
   // render the error page
   res.status(err.status || 500);
   console.log("メッセージ:" + res.locals.message);
-  console.log("エラー:" + res.locals.error)
+  console.log("エラー:" + JSON.stringify(err));
+  console.log("error status:" + err.status);
 });
 
 module.exports = app;

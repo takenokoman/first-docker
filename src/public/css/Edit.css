@@ -29,6 +29,7 @@
   bottom: 0;
   left: 0;
   width: 90%;
+  max-width: 720px;
   height: 400px;
   background-color: white;
   border-radius: 20px;
@@ -41,7 +42,7 @@
 #post-text {
   display: flex;
   width: 80%;
-  font-size: 30px;
+  font-size: 20px;
   margin: 20px auto;
   border-style: none;
 }

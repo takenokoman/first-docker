@@ -1,16 +1,9 @@
 import React from "react";
 import axiosBase from "axios";
-import { BrowserRouter as Router, Route, Redirect, Link, withRouter, } from "react-router-dom";
+import { HashRouter as Router, Route, Redirect, Link, withRouter, } from "react-router-dom";
 
-const axios = axiosBase.create({
-  baseURL: 'http://localhost:3000', // バックエンドB のURL:port を指定する
-  headers: {
-    'Content-Type': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest'
-  },
-  withCredentials: true,
-  responseType: 'json'
-});
+import axiosConfig from "../config/axios.config.js";
+const axios = axiosBase.create(axiosConfig);
 
 export default class Register extends React.Component {
   constructor() {
@@ -40,8 +33,13 @@ export default class Register extends React.Component {
         pass: pass
       })
       .then((res) => {
-        alert('登録したユーザー名: ' + res.data.name);
-        console.log(res.data.name + "さん");
+        if (res.data.name == null) {
+          alert(res.data.msg);
+          return false;
+        } else {
+          alert('登録したユーザー名: ' + res.data.name);
+          console.log(res.data.name + "さん");
+        }
       })
       .then((res) => {
         this.setState({register: true});

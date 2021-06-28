@@ -1,7 +1,10 @@
 version: '3'
 services:
   mysql:
-    image: mysql:5.7
+    image: 154199226033.dkr.ecr.ap-northeast-1.amazonaws.com/first-docker-mysql
+    build:
+      context: .
+      dockerfile: Dockerfile.mysql
     container_name: mysql
     env_file: ./mysql/mysql.env
     environment:
@@ -9,28 +12,16 @@ services:
     ports:
       - '3306:3306'
     volumes:
+      - ./mysql/initdb.d:/docker-entrypoint-initdb.d
       - ./mysql/conf:/etc/mysql/conf.d/:ro
       - mysqldata:/var/lib/mysql
     networks:
       - default
-  front:
-    image: node:12
-    container_name: front
-    env_file: ./app.env
-    environment:
-      - TZ=Asia/Tokyo
-      - DEBUG=app:*
-    tty: true
-    ports:
-      - '8080:8080'
-    volumes:
-      - ./front:/app
-    command: npm run client
-    working_dir: /app
-    networks:
-      - default
   app:
-    image: node:12
+    image: 154199226033.dkr.ecr.ap-northeast-1.amazonaws.com/first-docker
+    build:
+      context: .
+      dockerfile: Dockerfile.api
     container_name: app
     env_file: ./app.env
     environment:
@@ -39,19 +30,24 @@ services:
       - CHOKIDAR_USEPOLLING=true
     tty: true
     ports:
+      - '80:80'
       - '3000:3000'
       - '3001:3001'
     volumes:
       - ./src:/app
-      -
     working_dir: /app
     command: >
-      bash -c 'npm install -g concurrently &&
-      npm run dev'
+      bash -c "npm install &&
+      npm start"
     networks:
       - default
     depends_on:
       - mysql
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 4096M
 networks:
   default:
 # コンテナが削除されてもデータが消えずに保持される

@@ -1,7 +1,7 @@
 import React from "react";
 import axiosBase from "axios";
 import socketIOClient from "socket.io-client";
-const ENDPOINT = "http://localhost:3000";
+import endpoint from "../config/port.config.js";
 import Cookies from "universal-cookie";
 import { animateScroll as scroll } from "react-scroll";
 import { moment as momentTZ } from "moment-timezone";
@@ -10,16 +10,21 @@ import moment from "moment";
 //UserContexts
 import UserContext from "./contexts/userContext.js";
 
-const cookies = new Cookies();
-const axios = axiosBase.create({
-  baseURL: 'http://localhost:3000', // バックエンドB のURL:port を指定する
-  headers: {
-    'Content-Type': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest'
-  },
+const env = process.env.NODE_ENV || 'development';
+const socket = socketIOClient(endpoint[env], {
+  transport : ['websocket', 'polling', 'flashsocket'],
   withCredentials: true,
-  responseType: 'json'
+  extraHeaders: {
+    "my-custom-header": "abcd"
+  }
 });
+
+const cookies = new Cookies();
+import axiosConfig from "../config/axios.config.js";
+import axiosBlobConfig from "../config/axiosBlob.config.js";
+const axios = axiosBase.create(axiosConfig);
+const axiosBlob = axiosBase.create(axiosBlobConfig);
+
 export default class Posts extends React.Component {
   constructor() {
     super();
@@ -46,7 +51,6 @@ export default class Posts extends React.Component {
         alert('取得に失敗しました');
         console.log('ERROR!! occurred in Backend.');
       });
-    const socket = socketIOClient(ENDPOINT);
     socket.on("memberPost", data => {
       const post = [data];
       this.setState({
@@ -73,7 +77,6 @@ export default class Posts extends React.Component {
   postLikes(postId, userId, num) {
     console.log("username" + cookies.get('userId') + "num" + num + "postId" + postId);
     if (userId) {
-      const socket = socketIOClient(ENDPOINT);
       const data = {
         postId: postId,
         userId: userId,
@@ -126,7 +129,6 @@ export default class Posts extends React.Component {
       postId: postId,
       userId: userId
     };
-    const socket = socketIOClient(ENDPOINT);
     if (userId) {
       socket.emit('postReply', data);
     } else {

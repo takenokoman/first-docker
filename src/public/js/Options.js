@@ -6,15 +6,9 @@ import Cookies from "universal-cookie";
 import UserContext from "./contexts/userContext.js";
 
 const cookies = new Cookies();
-const axios = axiosBase.create({
-  baseURL: 'http://localhost:3000', // バックエンドB のURL:port を指定する
-  headers: {
-    'Content-Type': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest'
-  },
-  withCredentials: true,
-  responseType: 'json'
-});
+
+import axiosConfig from "../config/axios.config.js";
+const axios = axiosBase.create(axiosConfig);
 
 export default class Options extends React.Component {
   constructor() {
@@ -26,7 +20,7 @@ export default class Options extends React.Component {
     this.user = cookies.get('user');
   }
   componentDidMount() {
-    console.log(cookies.get('userIcon'));
+    console.log(cookies.get(-'userIcon'));
   }
 
   uploadImg(e){
@@ -65,13 +59,22 @@ export default class Options extends React.Component {
       axios
         .post('/api/img', data, header)
         .then((response) => {
+          const userIcon = response.data.userIcon;
+          const imgUrl = () => {
+            if (userIcon == null) {
+              return "";
+            } else {
+              const data = URL.createObjectURL(userIcon);
+              return data;
+            }
+          };
           console.log(response.data.userIcon);
-          cookies.set('userIcon', response.data.userIcon, { path: '/' , maxAge: 1000*60*30});
+          cookies.set('userIcon', imgUrl, { path: '/' , maxAge: 1000*60*30});
           alert("アイコンを変更しました");
           location.reload();
         })
         .catch((error) => {
-          console.log(data);
+          console.log(error);
           console.log('ERROR!! occurred in Backend.');
           alert('画像保存に失敗しました');
         });
@@ -96,11 +99,7 @@ export default class Options extends React.Component {
       <div id="option-wrap">
         <section id="profile">
           <div className="user-icon">
-            <img id="user-icon" src={
-              cookies.get('userIcon') ?
-                "../img/" + cookies.get('userIcon') :
-                "../img/default-icon.svg"
-            } />
+            <img id="user-icon" src="../img/default-icon.svg" />
           </div>
           <div>
             <p>
@@ -109,7 +108,7 @@ export default class Options extends React.Component {
           </div>
         </section>
         <section id="icon-option">
-          <b>アイコンの変更</b>
+          <b>アイコンの変更/現在使用不可</b>
           <br />
           <form onSubmit={this.postImg}>
             <div id="img-preview">

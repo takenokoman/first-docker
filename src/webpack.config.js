@@ -1,6 +1,6 @@
-var debug   = process.env.NODE_ENV !== "production";
-var webpack = require('webpack');
-var path    = require('path');
+const debug   = process.env.NODE_ENV !== "production";
+const webpack = require('webpack');
+const path    = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 
@@ -9,7 +9,7 @@ const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin"
 module.exports = {
   mode: 'development',
   context: path.join(__dirname, "public"),
-  entry: ['webpack/hot/dev-server', "./js/client.js"],
+  entry: ['@babel/polyfill', 'webpack/hot/dev-server', "./js/client.js"],
   target: 'web',
   // 追加
 //  watchOptions: {
@@ -46,14 +46,14 @@ module.exports = {
       filename: "client.min.js"
     },
     plugins: [
-      // process.env.NODE_ENV==='production' ?  new UglifyJsPlugin({
-      //        test: /\.js(\?.*)?$/i
-      //   }) : false,
+      process.env.NODE_ENV==='production' ?  new UglifyJsPlugin({
+             test: /\.js(\?.*)?$/i
+        }) : false,
       new webpack.HotModuleReplacementPlugin(),
-      process.env.NODE_ENV==='production' ?  new HtmlWebpackPlugin({
-        filename: './index.html',
-        template: path.resolve(__dirname, 'public/index.html'),
-      }) : false,
+      // process.env.NODE_ENV==='production' ?  new HtmlWebpackPlugin({
+      //   filename: './index.html',
+      //   template: path.resolve(__dirname, 'public/index.html'),
+      // }) : false,
       new ReactRefreshWebpackPlugin()
     ].filter(Boolean),
     devServer: {
@@ -79,8 +79,8 @@ module.exports = {
         }
       },
     },performance: {
-      maxEntrypointSize: 1000000,
-      maxAssetSize: 1000000,
+      maxEntrypointSize: 3000000,
+      maxAssetSize: 3000000,
     },
     devtool: 'inline-source-map',
 

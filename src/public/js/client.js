@@ -1,9 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route, Redirect, Link } from "react-router-dom";
+import { HashRouter as Router, Route, Redirect, Link } from "react-router-dom";
 import axiosBase from "axios";
 import Cookies from "universal-cookie";
-
 //jsx
 import Header from "./Header.js";
 import Posts from "./Posts.js";
@@ -19,20 +18,15 @@ import Options from "./Options.js";
 import UserContext from "./contexts/userContext.js";
 
 const cookies = new Cookies();
-const axios = axiosBase.create({
-  baseURL: 'http://localhost:3000', // バックエンドB のURL:port を指定する
-  headers: {
-    'Content-Type': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest'
-  },
-  withCredentials: true,
-  responseType: 'json'
-});
+
+import axiosConfig from "../config/axios.config.js";
+const axios = axiosBase.create(axiosConfig);
 
 
 class Layout extends React.Component {
   constructor() {
     super();
+    this.state = { loading: true };
   }
 
 

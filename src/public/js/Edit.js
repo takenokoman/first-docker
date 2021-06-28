@@ -1,22 +1,17 @@
 import React from "react";
 import axiosBase from "axios";
-import { BrowserRouter as Router, Route, Redirect, Link, withRouter, } from "react-router-dom";
+import { HashRouter as Router, Route, Redirect, Link, withRouter, } from "react-router-dom";
 import socketIOClient from "socket.io-client";
-const ENDPOINT = "http://localhost:3000";
+import endpoint from "../config/port.config.js";
 import Cookies from "universal-cookie";
+import axiosConfig from "../config/axios.config.js";
 
 import UserContext from "./contexts/userContext.js";
 
+const env = process.env.NODE_ENV || 'development';
+
 const cookies = new Cookies();
-const axios = axiosBase.create({
-  baseURL: 'http://localhost:3000', // バックエンドB のURL:port を指定する
-  headers: {
-    'Content-Type': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest'
-  },
-  withCredentials: true,
-  responseType: 'json'
-});
+const axios = axiosBase.create(axiosConfig);
 
 
 export default class Edit extends React.Component {
@@ -27,11 +22,12 @@ export default class Edit extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   handleSubmit(e) {
+    console.log(endpoint[env]);
     const userName = cookies.get('userName');
     const text = this.state.text;
     e.preventDefault();
     console.log(userName);
-    const socket = socketIOClient(ENDPOINT, {
+    const socket = socketIOClient(endpoint[env], {
       transport : ['websocket', 'polling', 'flashsocket'],
       withCredentials: true,
       extraHeaders: {

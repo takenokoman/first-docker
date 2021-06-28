@@ -1,4 +1,11 @@
 node_modules/
 
-# terraform
+terraform/terraform.tfvars
+
 **/.terraform/*
+
+et --soft b9b692db65bb5a0a164431a902f0e8b2e8c955cc
+
+creds.json
+
+app.env
